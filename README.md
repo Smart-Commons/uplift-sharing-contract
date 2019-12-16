@@ -3,19 +3,26 @@
 ### Installation.
 First of all, download & install [Ganache](https://www.trufflesuite.com/ganachehttps://www.trufflesuite.com/ganache) 
 <br />
+
 Then clone the project to your computer.
 <br />
+
 `$ git clone git@github.com:lucidmindsai/smart-commons.git`
 <br />
+
 Navigate to the project's root folder.
 <br />
+
 `$ cd smart-commons`
 <br />
+
 Install all the project dependencies. Before that make sure you have `npm` installed in your computer. If not check [NPM Website](https://www.npmjs.com/https://www.npmjs.com/) for installation guideline.
 <br />
+
 If `npm` is in place, install all the dependencies:<br />
 `$ npm install`
 <br />
+
 
 ### __Attention.__
 > Please note that all configuration to your local Ganache blockchain i.e., `127.0.0.1:7545` is already configured. On the other hand the default file structure of this Truffle project is changed: Smart contract files are moved under `/src` directory so the ***React App*** can reach them easily.
