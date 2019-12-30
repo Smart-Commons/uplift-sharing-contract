@@ -6,21 +6,38 @@ contract SmartCommons {
     uint public propertySaleCount = 0;
     mapping(uint => PropertySale) public property_sales;
 
+    enum MemberType {owner, buyer}
+    
     struct Member {
-        uint id;
+        address memberAddress;
         string name;
-        mapping(uint => Property) properties;
+        MemberType memberType;
     }
-    uint public memberCount = 0;
-    mapping(uint => Member) public members;
 
-    function createMember(string memory _name) public {
-        memberCount++;
-        members[memberCount++] = Member(memberCount, _name);
+    uint public ownerCount = 0;
+    uint public buyerCount = 0;
+    mapping(address => Member[]) public buyersOfProperty;
+    mapping(address => Member[]) public ownersOfProperty;
+
+    function createBuyer(address _memberAddress, string memory _name) public {
+
+        Member memory buyer = Member(msg.sender, _name, MemberType.buyer);
+        buyersOfProperty[_memberAddress].push(buyer);
     }
+
+    function createOwner(address _memberAddress, string memory _name) public {
+
+        Member memory owner = Member(msg.sender, _name, MemberType.owner);
+        ownersOfProperty[_memberAddress].push(owner);
+    }
+
+    function getBuyer(address _buyerAddress) public {}
+    function getOwner(address _ownerAddress) public {} 
+
 
     struct Property {
         uint id;
+        address owner_address;
         string name;
         string location;
         uint price;
@@ -30,6 +47,7 @@ contract SmartCommons {
     
     event PropertyCreated (
         uint id,
+        address owner_address,
         string name,
         string location,
         uint price
@@ -41,8 +59,8 @@ contract SmartCommons {
         require(_price > 0);
         
         propertyCount++;
-        properties[propertyCount] = Property(propertyCount, _name, _location, _price);
-        emit PropertyCreated(propertyCount, _name, _location, _price);
+        properties[propertyCount] = Property(propertyCount, msg.sender, _name, _location, _price);
+        emit PropertyCreated(propertyCount, msg.sender, _name, _location, _price);
     }
 
     struct InvestmentFund {
@@ -51,6 +69,7 @@ contract SmartCommons {
         mapping (uint => Member) members;
     }
     uint public totalInvestmentFund = 0;
+    mapping (address => Member[]) funders;
 
 
     struct PropertySale {
