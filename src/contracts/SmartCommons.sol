@@ -3,64 +3,70 @@ pragma solidity ^0.5.0;
 contract SmartCommons {
     string public name;
  
-    uint public propertySaleCount = 0;
-    mapping(uint => PropertySale) public property_sales;
-
     enum MemberType {owner, buyer}
     
     struct Member {
         address memberAddress;
         string name;
         MemberType memberType;
+        uint budget;
     }
 
     uint public ownerCount = 0;
     uint public buyerCount = 0;
-    mapping(address => Member[]) public buyersOfProperty;
-    mapping(address => Member[]) public ownersOfProperty;
+    mapping(address => Member) public buyersOfProperty;
+    mapping(address => Member) public ownersOfProperty;
 
-    function createBuyer(address _memberAddress, string memory _name) public {
+    function addMember(address _memberAddress, string memory _name, MemberType _type, uint _budget) public {
 
-        Member memory buyer = Member(msg.sender, _name, MemberType.buyer);
-        buyersOfProperty[_memberAddress].push(buyer);
+        if (_type == MemberType.buyer) {
+             Member memory buyer = Member(_memberAddress, _name, MemberType.buyer, _budget);
+             buyersOfProperty[_memberAddress] = buyer;
+             buyerCount++;
+
+        } else if (_type == MemberType.owner) {
+            Member memory owner = Member(_memberAddress, _name, MemberType.owner, _budget);
+            ownersOfProperty[_memberAddress] = owner;
+            ownerCount++;
+        }
     }
 
-    function createOwner(address _memberAddress, string memory _name) public {
-
-        Member memory owner = Member(msg.sender, _name, MemberType.owner);
-        ownersOfProperty[_memberAddress].push(owner);
+    function getBuyer(address _buyerAddress) view public returns (string memory) {
+        return buyersOfProperty[_buyerAddress].name;
     }
 
-    function getBuyer(address _buyerAddress) public {}
-    function getOwner(address _ownerAddress) public {} 
-
+    function getOwner(address _ownerAddress) view public returns (string memory) {
+        return ownersOfProperty[_ownerAddress].name;
+    }
 
     struct Property {
         uint id;
-        address owner_address;
         string name;
         string location;
+        string owner;
         uint price;
     }
+
     uint public propertyCount = 0;
     mapping(uint => Property) public properties;
     
     event PropertyCreated (
         uint id,
-        address owner_address,
         string name,
         string location,
+        string owner,
         uint price
     );
 
-    function newProperty(string memory _name, string memory _location, uint _price) public {
+    function addProperty(string memory _name, string memory _location, address _ownerAddress, uint _price) public {
         require(bytes(_name).length > 0);
         require(bytes(_location).length > 0);
         require(_price > 0);
         
+        string memory owner = getOwner(_ownerAddress);
         propertyCount++;
-        properties[propertyCount] = Property(propertyCount, msg.sender, _name, _location, _price);
-        emit PropertyCreated(propertyCount, msg.sender, _name, _location, _price);
+        properties[propertyCount] = Property(propertyCount, _name, _location, owner, _price);
+        emit PropertyCreated(propertyCount, _name, _location, owner, _price);
     }
 
     struct InvestmentFund {
@@ -74,37 +80,30 @@ contract SmartCommons {
 
     struct PropertySale {
         uint id;
-        string name;
-        uint price;
+        Property property;
         uint uplift_value;
         uint uplift_cont_rate;
-        address owner;
-        bool purchased;
-        string location;
     }
 
-    event PropertySaleCreated(
+    uint public propertySaleCount = 0;
+    mapping(uint => PropertySale) property_sales;
+
+    event PropertySold(
         uint id,
-        string name,
-        uint price,
         uint uplift_value,
-        uint uplift_cont_rate,
-        address owner,
-        bool purchased
+        uint uplift_cont_rate
     );
 
-    function createPropertySale(string memory _name, uint _price, uint _uplift_value, uint _uplift_cont_rate, string memory _location) public {
-        require(bytes(_name).length > 0);
-        require(_price > 0);
+    function createSaleTransaction(uint _propertyId, address _buyerAddress, uint _uplift_value, uint _uplift_cont_rate) public {
         require(_uplift_value > 0);
         require(_uplift_cont_rate > 0);
-
+        string memory newOwner = getBuyer(_buyerAddress);
+        Property memory _property = properties[_propertyId];
+        _property.owner = newOwner;
         propertySaleCount ++;
-        property_sales[propertySaleCount] = PropertySale(propertySaleCount, _name, _price, _uplift_value, _uplift_cont_rate, msg.sender, false, _location);
-        emit PropertySaleCreated(propertySaleCount, _name, _price, _uplift_value, _uplift_cont_rate, msg.sender, false);
+        property_sales[propertySaleCount] = PropertySale(propertySaleCount, _property, _uplift_value, _uplift_cont_rate);
+        //emit PropertySold(propertySaleCount, _property, _uplift_value, _uplift_cont_rate);
     }
-
-
 
     constructor() public {
         name = "Smart Commons";

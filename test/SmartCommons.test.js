@@ -3,7 +3,7 @@ require('chai')
     .use(require('chai-as-promised'))
     .should()
 
-contract('SmartCommons', ([deployer, seller, buyer]) => {
+contract('SmartCommons', ([deployer, owner, buyer]) => {
   let smartcommons
 
   before(async () => {
@@ -25,24 +25,24 @@ contract('SmartCommons', ([deployer, seller, buyer]) => {
     })
   })
 
-  describe('propertySales', async () => {
-      let result, propertySaleCount
+  describe('properties', async () => {
+    let result, propertyCount
+    before(async () => {
+      result = await smartcommons.addProperty('Cool Apt.', 'Berlin', owner, 300000)
+      propertyCount = await smartcommons.propertyCount()
+    })
 
-      before(async () => {
-          result = await smartcommons.createPropertySale('Block 8th Apt.', 300000, 200000, 10, 'Berlin', { from: seller })
-          propertySaleCount = await smartcommons.propertySaleCount()
-      })
+    it('creates properties', async () => {
+      assert.equal(propertyCount, 1)
+      const event = result.logs[0].args
+      assert.equal(event.id.toNumber(), propertyCount.toNumber(), 'id is correct')
+      assert.equal(event.name, 'Cool Apt.', 'name is correct')
+      assert.equal(event.price, 300000, 'price is correct')
+      // TODO: you should test the owner here somehow.
 
-      it('creates propertySale', async () => {
-            assert.equal(propertySaleCount, 1)
-            const event = result.logs[0].args
-            assert.equal(event.id.toNumber(), propertySaleCount.toNumber(), 'id is correct')
-            assert.equal(event.name, 'Block 8th Apt.', 'name is correct')
-            assert.equal(event.price, '300000', 'price is correct')
-            assert.equal(event.uplift_value, '200000', 'uplift value is correct')
-            assert.equal(event.uplift_cont_rate, '10', 'uplift cont rate is correct')
-            assert.equal(event.owner, seller, 'owner is correct')
-            assert.equal(event.purchased, false, 'purchased is correct')
-      })
+      await await smartcommons.addProperty('', 'Berlin', owner, 0).should.be.rejected;
+      await await smartcommons.addProperty('Example', 'Berlin', owner, 0).should.be.rejected;
+    })
+
   })
 })
