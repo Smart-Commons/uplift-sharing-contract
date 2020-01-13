@@ -1,1 +1,6 @@
 /* Styles go here */
+
+#content {
+    padding-top: 30px;
+    margin: 0 auto;
+}
