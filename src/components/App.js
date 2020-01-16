@@ -49,29 +49,26 @@ class App extends Component {
         })
       }
 
-      const ownerCount = await smartcommons.methods.ownerCount.call()
       const buyerCount = await smartcommons.methods.buyerCount.call()
-      this.setState({ ownerCount })
-      this.setState({ buyerCount })
-      //Load members
-      // for (var i = 1; i <= buyerCount; i++){
-      //   const buyer = await smartcommons.methods.buyersOfProperty(i).call()
-      //   this.setState({
-      //     properties: [...this.state.buyersOfProperty, buyer]
-      //   })
-      // }
-      for (var j = 1; j <= ownerCount; j++){
-        const owner = await smartcommons.methods.ownersOfProperty(j).call()
+      console.log(buyerCount)
+      for (var j = 1; j <= buyerCount; j++){
+        const buyer = await smartcommons.methods.buyersOfProperty(j).call()
         this.setState({
-          owners: [...this.state.ownersOfProperty, owner]
+          buyersOfProperty: [...this.state.buyersOfProperty, buyer]
         })
       }
 
-      console.log("these are number of properties")
-      //console.log(propertyCount.toString())
-      console.log(this.state.properties)
-      console.log("these are number of members")
-      console.log(ownerCount.toString())
+      const ownerCount = await smartcommons.methods.ownerCount.call()
+      for (var k = 1; k <= ownerCount; k++){
+          const owner = await smartcommons.methods.owners(k).call()
+          this.setState({
+            owners: [...this.state.owners, owner]
+          })
+      }
+  
+      this.setState({ ownerCount })
+      this.setState({ buyerCount })      
+
       this.setState({loading: false})
     } else {
       window.alert('SmartCommons contract not deployed to detected network.')
@@ -88,24 +85,22 @@ class App extends Component {
       ownerCount: 0,
       owners: [],
       buyerCount: 0,
-      buyers: [],
+      buyersOfProperty: [],
     }
     this.addProperty = this.addProperty.bind(this)
     this.addMember = this.addMember.bind(this)
   }
 
-  addProperty(name, location, owner, price){
+  addProperty(name, location, owner_id, registered_valuation, sell_value, uplift_percentage, registered_date){
     this.setState({ loading: true })
-    this.state.smartcommons.methods.addProperty(name, location, this.state.account, price).send({ from: this.state.account }).once('receipt', (receipt) => {this.setState({ loading: false })})
+    this.state.smartcommons.methods.addProperty(name, location, owner_id, registered_valuation, sell_value, uplift_percentage, registered_date).send({ from: this.state.account }).once('receipt', (receipt) => {this.setState({ loading: false })})
   }
 
   addMember(name, type, budget){
-    const webthree = window.web3
     this.setState({ loading: true })
-    var newAccount = webthree.eth.accounts.create();
-    console.log("new account:")
-    console.log(newAccount.address)
-    this.state.smartcommons.methods.addMember(newAccount.address, name, type, budget).send({ from: this.state.account }).once('receipt', (receipt) => {this.setState({ loading: false })})
+    console.log(type)
+    console.log(name)
+    this.state.smartcommons.methods.addMember(name, type, budget).send({ from: this.state.account }).once('receipt', (receipt) => {this.setState({ loading: false })})
   }
 
   render() {
@@ -119,7 +114,8 @@ class App extends Component {
             ? <div id="loader" className="text-center"><p className="text-center">Loading...</p></div>
             : <Main 
               properties={this.state.properties}
-              owners={this.state.owners} 
+              buyersOfProperty={this.state.buyersOfProperty} 
+              owners={this.state.owners}
               addProperty={this.addProperty}
               addMember={this.addMember} />
             }

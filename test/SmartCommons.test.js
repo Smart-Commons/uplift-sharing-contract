@@ -29,8 +29,8 @@ contract('SmartCommons', ([deployer, owner, buyer]) => {
     let result, propertyCount, newOwner, newBuyer, buyerCount, ownerCount
     before(async () => {
       result = await smartcommons.addProperty('Cool Apt.', 'Berlin', owner, 300000)
-      newOwner = await smartcommons.addMember(owner, 'Owner Test', 'owner', 500000)
-      newBuyer = await smartcommons.addMember(buyer, 'Buyer Test', 'buyer', 900000)
+      newOwner = await smartcommons.addMember('testBuyer', 'buyer', 500000)
+      newBuyer = await smartcommons.addMember('testBuyer2', 'buyer', 100000)
       propertyCount = await smartcommons.propertyCount()
       ownerCount = await smartcommons.ownerCount()
       buyerCount = await smartcommons.buyerCount()
@@ -49,38 +49,24 @@ contract('SmartCommons', ([deployer, owner, buyer]) => {
 
     it('should add a new member', async () => {
       // Set the names of test data
-      var memberName = "TestOwner";
-      var  memberStatus = "owner";
-      var memberAccount = owner;
-      var memberBudget = 600000;
+      var memberName = "TestBuyer";
+      var  memberStatus = "buyer";
+      var memberBudget = 6000;
 
       var smartCommonsContract;
 
       return Smartcommons.deployed().then(function(instance) {
         smartCommonsContract = instance;
-        return instance.addMember(memberAccount, memberName, memberStatus, memberBudget);
+        return instance.addMember(memberName, memberStatus, memberBudget);
       }).then(function(){
-        return smartCommonsContract.getOwner(memberAccount);
+        return smartCommonsContract.getBuyer(3);
       }).then(function(result){
         var name = result;
-        assert.equal(name, "TestOwner", "Owner name is correct.")
+        assert.equal(name, "TestBuyer", "Buyer name is correct.")
       })
     })
     
-    it('should create a sales transaction', async () => {
-      var commons;
-      const event = result.logs[0].args
-
-      return Smartcommons.deployed().then(function(instance) {
-        commons = instance;
-        return commons.createSaleTransaction(event.id, buyer, 5000, 100);
-      }).then(function(result) {
-        const transactionDetails = result.logs[0].args
-        assert.equal('Cool Apt.', transactionDetails.propertyName, 'Sold apt. name is correct.')
-        assert.equal(5000, transactionDetails.uplift_value, 'Uplift value of the transaction is correct.')
-        assert.equal(100, transactionDetails.uplift_cont_rate, 'Uplift cont rate of the transaction is correct')
-      })
-    })
+    
 
   })
 })

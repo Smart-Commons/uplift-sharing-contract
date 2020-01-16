@@ -4,39 +4,44 @@ contract SmartCommons {
     string public name;
      
     struct Member {
-        address memberAddress;
+        uint id;
         string name;
         string memberType;
+        address memberAddress;
         uint budget;
     }
-
+    uint[] public membersList;
     uint public ownerCount = 0;
     uint public buyerCount = 0;
     mapping(uint => Member) public buyersOfProperty;
-    mapping(uint => Member) public ownersOfProperty;
+    mapping(uint => Member) public owners;
 
-    function addMember(address _memberAddress, string memory _name, string memory _type, uint _budget) public {
+    function addMember(string memory _name, string memory _type, uint _budget) public {
+        require(bytes(_name).length > 0);
+        require(bytes(_type).length > 0);
+        require(_budget > 0);
+
+        address newMemberAddress;
 
         if (keccak256(abi.encodePacked(_type)) == keccak256(abi.encodePacked('buyer'))) {
-             Member memory buyer = Member(_memberAddress, _name, 'buyer', _budget);
-             buyerCount++;
-             buyersOfProperty[buyerCount] = buyer;
-             
+            buyerCount++;
+            Member memory buyer = Member(buyerCount, _name, _type, newMemberAddress, _budget);
+            buyersOfProperty[buyerCount] = buyer;
 
-        } else if (keccak256(abi.encodePacked(_type)) == keccak256(abi.encodePacked('owner'))){
-            Member memory owner = Member(_memberAddress, _name, 'owner', _budget);
+        } else if (keccak256(abi.encodePacked(_type)) == keccak256(abi.encodePacked('owner'))) {
             ownerCount++;
-            ownersOfProperty[ownerCount] = owner;
-            
-        }
+            Member memory owner = Member(ownerCount, _name, _type, newMemberAddress, _budget);
+            owners[ownerCount] = owner;
+        }     
     }
 
+
     function getBuyer(uint _buyerId) view public returns (string memory) {
-        return buyersOfProperty[_buyerId].name;
+        return (buyersOfProperty[_buyerId].name);
     }
 
     function getOwner(uint _ownerId) view public returns (string memory) {
-        return ownersOfProperty[_ownerId].name;
+        return (owners[_ownerId].name);
     }
 
     struct Property {
@@ -44,30 +49,37 @@ contract SmartCommons {
         string name;
         string location;
         string owner;
-        uint price;
+        uint registered_valuation;
+        uint sell_value;
+        uint uplift_percentage;
         bool purchased;
+        string registered_date;
     }
 
     uint public propertyCount = 0;
     mapping(uint => Property) public properties;
-    
+
     event PropertyCreated (
         uint id,
         string name,
         string location,
         string owner,
-        uint price
+        uint registered_valuation,
+        uint sell_value,
+        uint uplift_percentage,
+        string registered_date
     );
 
-    function addProperty(string memory _name, string memory _location, uint _ownerId, uint _price) public {
+    function addProperty(string memory _name, string memory _location, uint _ownerId, uint _registered_valuation, uint _sell_value, uint _uplift_percentage, string memory _registered_date) public {
         require(bytes(_name).length > 0);
         require(bytes(_location).length > 0);
-        require(_price > 0);
+        require(_registered_valuation > 0);
+        require(_uplift_percentage > 0);
         
         string memory owner = getOwner(_ownerId);
         propertyCount++;
-        properties[propertyCount] = Property(propertyCount, _name, _location, owner, _price, false);
-        emit PropertyCreated(propertyCount, _name, _location, owner, _price);
+        properties[propertyCount] = Property(propertyCount, _name, _location, owner, _registered_valuation, _sell_value, _uplift_percentage, false, _registered_date);
+        emit PropertyCreated(propertyCount, _name, _location, owner, _registered_valuation, _sell_value, _uplift_percentage, _registered_date);
     }
 
     struct InvestmentFund {
