@@ -10,6 +10,7 @@ contract SmartCommons {
         address memberAddress;
         uint budget;
     }
+
     uint[] public membersList;
     uint public ownerCount = 0;
     uint public buyerCount = 0;
@@ -92,13 +93,16 @@ contract SmartCommons {
 
     struct PropertySale {
         uint id;
-        Property property;
+        uint propertyId;
+        string propertyName;
+        string fromOwner;
+        string toOwner;
         uint uplift_value;
         uint uplift_cont_rate;
     }
 
     uint public propertySaleCount = 0;
-    mapping(uint => PropertySale) property_sales;
+    mapping(uint => PropertySale) public propertySales;
 
     event PropertySold(
         uint id,
@@ -110,13 +114,15 @@ contract SmartCommons {
     function createSaleTransaction(uint _propertyId, uint _buyerId, uint _uplift_value, uint _uplift_cont_rate) public {
         require(_uplift_value > 0);
         require(_uplift_cont_rate > 0);
+        
         string memory newOwner = getBuyer(_buyerId);
         Property memory _property = properties[_propertyId];
         string memory currentOwner = _property.owner;
         _property.owner = newOwner;
         _property.purchased = true;
+
         propertySaleCount ++;
-        property_sales[propertySaleCount] = PropertySale(propertySaleCount, _property, _uplift_value, _uplift_cont_rate);
+        propertySales[propertySaleCount] = PropertySale(propertySaleCount, _propertyId, _property.name, currentOwner, _property.owner, _uplift_value, _uplift_cont_rate);
         nrofInvestments ++;
         funders[nrofInvestments] = InvestmentFund(currentOwner, _uplift_value);
         emit PropertySold(propertySaleCount, _property.name, _uplift_value, _uplift_cont_rate);

@@ -4,10 +4,10 @@ class Main extends Component {
 
   render() {
     return (
-      <div id="content" className="col-12"> 
-          <div id="addMember" className="col-6">
-          <h1>Add New Members</h1>
-          <form  onSubmit={(event) => {
+      <div id="content" className="row"> 
+          <div id="addMember" className="col mr-5 ml-3">
+          <h3>Member Registration</h3>
+          <form className="registration-form mb-5" onSubmit={(event) => {
             event.preventDefault()
             const name = this.memberName.value
             const type = this.memberType.value
@@ -41,15 +41,15 @@ class Main extends Component {
                 placeholder="Budget"
                 required />
             </div>
-        <button type="submit" className="btn btn-primary">Add Member</button>
+        <button type="submit" className="btn btn-dark">register</button>
         </form>
         <p> </p>
-            <h2>List of Participants</h2>
-            <table className="table">
+            <h3>List of Participants</h3>
+            <table className="table mt-5 mr-5">
             <thead>
                 <tr>
                 <th scope="col">#</th>
-                <th scope="col">Address</th>
+                <th scope="col">Id</th>
                 <th scope="col">Name</th>
                 <th scope="col">Budget</th>
                 <th scope="col">Member Type</th>
@@ -60,7 +60,7 @@ class Main extends Component {
                     return(
                         <tr key={key}>
                         <th scope="row"></th>
-                        <td>{buyer.memberAddress}</td>
+                        <td>{buyer.id.toString()}</td>
                         <td>{buyer.name}</td>
                         <td>{buyer.budget.toString()}</td>
                         <td>{buyer.memberType}</td>
@@ -73,7 +73,7 @@ class Main extends Component {
                     return(
                         <tr key={key}>
                         <th scope="row"></th>
-                        <td>{owner.memberAddress}</td>
+                        <td>{owner.id.toString()}</td>
                         <td>{owner.name}</td>
                         <td>{owner.budget.toString()}</td>
                         <td>{owner.memberType}</td>
@@ -82,10 +82,39 @@ class Main extends Component {
                     })}
             </tbody>
             </table>
-        </div>
-        <div className="col-6">
-            <h1>Add New Property</h1>
-            <form onSubmit={(event) => {
+        <h3>Sales Transactions</h3>
+            <table className="table mt-5 mr-5">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Property Id</th>
+                <th scope="col">Property Name</th>
+                <th scope="col">Prev Owner</th>
+                <th scope="col">Current Owner</th>
+                <th scope="col">Uplift Value</th>
+                <th scope="col">Uplift Cont. Rate</th>
+                </tr>
+            </thead>
+            <tbody id="salesTransactions">
+                { this.props.propertySales.map((sale, key) => {
+                    return(
+                        <tr key={key}>
+                        <th scope="row"></th>
+                        <td>{sale.propertyId.toString()}</td>
+                        <td>{sale.propertyName}</td>
+                        <td>{sale.fromOwner}</td>
+                        <td>{sale.toOwner}</td>
+                        <td>{sale.uplift_value.toString()}</td>
+                        <td>{sale.uplift_cont_rate.toString()}</td>
+                        </tr>
+                    )
+                    })}
+            </tbody>
+            </table>
+            </div>
+        <div className="col ml-5">
+            <h3>Register a Property</h3>
+            <form className="mb-5" onSubmit={(event) => {
             event.preventDefault()
             const name = this.propertyName.value
             const location = this.propertyLocation.value
@@ -166,10 +195,10 @@ class Main extends Component {
                 required />
             </div>
 
-            <button type="submit" className="btn btn-primary">Add Property</button>
+            <button type="submit" className="btn btn-dark">Add Property</button>
             </form>
             <p> </p>
-            <h2>Properties</h2>
+            <h3>Properties</h3>
             <table className="table">
             <thead>
                 <tr>
@@ -181,12 +210,14 @@ class Main extends Component {
                 <th scope="col">Sell Value</th>
                 <th scope="col">Uplift %</th>
                 <th scope="col">Reg. Date</th>
+                <th scope="col">Buyer Id</th>
+                <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody id="propertyList">
                 { this.props.properties.map((property, key) => {
                     return(
-                        <tr key={key}>
+                        <tr ng-repeat="name in getdrugnameNewArray" key={key}>
                         <th scope="row">{property.id.toString()}</th>
                         <td>{property.name}</td>
                         <td>{property.location}</td>
@@ -194,19 +225,24 @@ class Main extends Component {
                         <td>{property.registered_valuation.toString()}</td>
                         <td>{property.sell_value.toString()}</td>
                         <td>{property.uplift_percentage.toString()}</td>
-                        <td>{property.registered_date}</td>                        
+                        <td>{property.registered_date}</td>
+                        <td><input id="buyerId" type="text" placeholder="Buyer ID"></input></td>
                         <td>
-                            <button
-                                name={property.id}
-                                value={property.price}
-                                onClick={(event) => {
-                                    alert('10% of uplift cont. will be transferred to investment fund. Do you agree?')
-                                }}
+                            { !property.purchased
+                                ? <button
+                                    className="btn btn-outline-dark"
+                                    name={property.id}
+                                    value={property.sell_value}
+                                    onClick={(event) => {
+                                        var currentBuyerId = document.getElementById("buyerId").value;
+                                        this.props.createSaleTransaction(property.id, Number(currentBuyerId), Number(property.sell_value), Number(property.uplift_percentage))
+                                    }}
                                 >
-                                Create Sale Transaction
+                                    Create Sale Transaction
                                 </button>
-                            
-                            </td>
+                            : null
+                        }
+                        </td>
                         </tr>
                     )
                     })}
