@@ -65,9 +65,18 @@ class App extends Component {
             owners: [...this.state.owners, owner]
           })
       }
-  
+
+      const salesCount = await smartcommons.methods.propertySaleCount.call()
+      for (var s = 1; s <= salesCount; s++){
+        const property_sale = await smartcommons.methods.propertySales(s).call()
+        this.setState({
+          propertySales: [...this.state.propertySales, property_sale]
+        })
+      }
+
       this.setState({ ownerCount })
-      this.setState({ buyerCount })      
+      this.setState({ buyerCount })
+      this.setState({ salesCount })      
 
       this.setState({loading: false})
     } else {
@@ -86,9 +95,12 @@ class App extends Component {
       owners: [],
       buyerCount: 0,
       buyersOfProperty: [],
+      salesCount: 0,
+      propertySales: [],
     }
     this.addProperty = this.addProperty.bind(this)
     this.addMember = this.addMember.bind(this)
+    this.createSaleTransaction = this.createSaleTransaction.bind(this)
   }
 
   addProperty(name, location, owner_id, registered_valuation, sell_value, uplift_percentage, registered_date){
@@ -98,26 +110,34 @@ class App extends Component {
 
   addMember(name, type, budget){
     this.setState({ loading: true })
-    console.log(type)
-    console.log(name)
     this.state.smartcommons.methods.addMember(name, type, budget).send({ from: this.state.account }).once('receipt', (receipt) => {this.setState({ loading: false })})
+  }
+
+  createSaleTransaction(propertyId, buyerId, upliftValue, upliftContRate) {
+    this.setState({ loading: true })
+    this.state.smartcommons.methods.createSaleTransaction(propertyId, buyerId, upliftValue, upliftContRate).send({from: this.state.account})
+    .once('receipt', (receipt) => {
+      this.setState({ loading: false })
+    })
   }
 
   render() {
     return (
       <div>
         <Navbar account={this.state.account} />
-        <div className="container-fluid mt-5">
+        <div className="container-fluid">
           <div className="row">
           <main role="main" className="col-lg-12 d-flex">
             { this.state.loading
             ? <div id="loader" className="text-center"><p className="text-center">Loading...</p></div>
             : <Main 
               properties={this.state.properties}
+              propertySales={this.state.propertySales}
               buyersOfProperty={this.state.buyersOfProperty} 
               owners={this.state.owners}
               addProperty={this.addProperty}
-              addMember={this.addMember} />
+              addMember={this.addMember}
+              createSaleTransaction={this.createSaleTransaction} />
             }
           </main>
           </div>
