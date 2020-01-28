@@ -90,6 +90,7 @@ contract SmartCommons {
     uint public nrofInvestments = 0;
     mapping(uint => InvestmentFund) public funders;
 
+   
 
     struct PropertySale {
         uint id;
@@ -124,7 +125,7 @@ contract SmartCommons {
         propertySaleCount ++;
         propertySales[propertySaleCount] = PropertySale(propertySaleCount, _propertyId, _property.name, currentOwner, _property.owner, _uplift_value, _uplift_cont_rate);
         nrofInvestments ++;
-        funders[nrofInvestments] = InvestmentFund(currentOwner, _uplift_value);
+        funders[nrofInvestments] = InvestmentFund(currentOwner, _uplift_value * _uplift_cont_rate / 100);
         emit PropertySold(propertySaleCount, _property.name, _uplift_value, _uplift_cont_rate);
     }
 
