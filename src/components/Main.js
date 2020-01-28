@@ -112,6 +112,30 @@ class Main extends Component {
             </tbody>
             </table>
             </div>
+
+        <div className="col ml-5">
+            <h3>List of equity contributors</h3>
+            <table className="table mt-5 mr-5">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Participant</th>
+                <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody id="fundersList">
+                { this.props.funders.map((funder, key) => {
+                    return(
+                        <tr key={key}>
+                        <th scope="row"></th>
+                        <td>{funder.funder}</td>
+                        <td>{funder.total_amount.toString()}</td>
+                        </tr>
+                    )
+                    })}
+            </tbody>
+            </table>
+        </div>
         <div className="col ml-5">
             <h3>Register a Property</h3>
             <form className="mb-5" onSubmit={(event) => {
