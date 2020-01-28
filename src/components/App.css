@@ -1,1 +1,43 @@
 /* Styles go here */
+
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+#content {
+    margin-top: 9rem;
+    font-family: Helvetica, sans-serif;
+}
+
+.navbar {
+    font-family: Helvetica, sans-serif;
+    padding-bottom: 10px;
+}
+
+.navbar a {
+    color: black!important;
+    margin: 0 auto;
+    font-style: normal;
+    text-transform: capitalize;
+}
+
+.nav-item span {
+    color: black!important;
+}
+
+table td {
+    position: relative;
+  }
+  
+  table td input {
+    position: absolute;
+    display: block;
+    top:0;
+    left:0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+  }
