@@ -74,6 +74,14 @@ class App extends Component {
         })
       }
 
+      const equityShareCount = await smartcommons.methods.nrofInvestments.call()
+      for (var k = 1; k <= equityShareCount; k++){
+          const funder = await smartcommons.methods.funders(k).call()
+          this.setState({
+            funders: [...this.state.funders, funder]
+          })
+      }
+
       this.setState({ ownerCount })
       this.setState({ buyerCount })
       this.setState({ salesCount })      
@@ -97,6 +105,8 @@ class App extends Component {
       buyersOfProperty: [],
       salesCount: 0,
       propertySales: [],
+      funders: [],
+      equityShareCount: 0,
     }
     this.addProperty = this.addProperty.bind(this)
     this.addMember = this.addMember.bind(this)
@@ -131,6 +141,7 @@ class App extends Component {
             { this.state.loading
             ? <div id="loader" className="text-center"><p className="text-center">Loading...</p></div>
             : <Main 
+              funders={this.state.funders}
               properties={this.state.properties}
               propertySales={this.state.propertySales}
               buyersOfProperty={this.state.buyersOfProperty} 
