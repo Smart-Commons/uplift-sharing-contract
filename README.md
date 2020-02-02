@@ -1,5 +1,9 @@
 ## Smart Commons Solidity (ETH) Prototype
 
+### Infrastructure Overview
+![Smart Commons Infrastructure](infrastructure-overview.png)
+
+
 ### Installation.
 First of all, download & install [Ganache](https://www.trufflesuite.com/ganachehttps://www.trufflesuite.com/ganache) 
 <br />
