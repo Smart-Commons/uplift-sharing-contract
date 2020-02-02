@@ -90,7 +90,6 @@ contract SmartCommons {
     uint public nrofInvestments = 0;
     mapping(uint => InvestmentFund) public funders;
 
-   
 
     struct PropertySale {
         uint id;
@@ -98,6 +97,7 @@ contract SmartCommons {
         string propertyName;
         string fromOwner;
         string toOwner;
+        string algoHash;
         uint uplift_value;
         uint uplift_cont_rate;
     }
@@ -112,9 +112,9 @@ contract SmartCommons {
         uint uplift_cont_rate
     );
 
-    function createSaleTransaction(uint _propertyId, uint _buyerId, uint _uplift_value, uint _uplift_cont_rate) public {
+    function createSaleTransaction(uint _propertyId, uint _buyerId, string memory _algoHash, uint _uplift_value, uint _calculated_uplift_cont) public {
         require(_uplift_value > 0);
-        require(_uplift_cont_rate > 0);
+        require(_calculated_uplift_cont > 0);
         
         string memory newOwner = getBuyer(_buyerId);
         Property memory _property = properties[_propertyId];
@@ -123,10 +123,10 @@ contract SmartCommons {
         _property.purchased = true;
 
         propertySaleCount ++;
-        propertySales[propertySaleCount] = PropertySale(propertySaleCount, _propertyId, _property.name, currentOwner, _property.owner, _uplift_value, _uplift_cont_rate);
+        propertySales[propertySaleCount] = PropertySale(propertySaleCount, _propertyId, _property.name, currentOwner, _property.owner, _algoHash, _uplift_value, _calculated_uplift_cont);
         nrofInvestments ++;
-        funders[nrofInvestments] = InvestmentFund(currentOwner, _uplift_value * _uplift_cont_rate / 100);
-        emit PropertySold(propertySaleCount, _property.name, _uplift_value, _uplift_cont_rate);
+        funders[nrofInvestments] = InvestmentFund(currentOwner, _calculated_uplift_cont);
+        emit PropertySold(propertySaleCount, _property.name, _uplift_value, _calculated_uplift_cont);
     }
 
     constructor() public {
