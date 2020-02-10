@@ -12839,6 +12839,139 @@
       "links": {},
       "address": "0x1e4Dc60ABB99c90487a9Be94b59d01666b76a006",
       "transactionHash": "0xfdc61c6ccaf78b61bdf3482a849697525e876eca9aa24350cc01086c9cf2a23e"
+    },
+    "42": {
+      "events": {
+        "0x06ab8df272ec1d14bcadac322c592708ba1d07004cdb689caabc425ef5bd4293": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "location",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "owner",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            }
+          ],
+          "name": "PropertyCreated",
+          "type": "event",
+          "signature": "0x06ab8df272ec1d14bcadac322c592708ba1d07004cdb689caabc425ef5bd4293"
+        },
+        "0xff9c9d90cee13a5021c61e4721b5d7bef20c4c0455cd4e5deca95fad36274ec8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "propertyName",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "uplift_value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "uplift_cont_rate",
+              "type": "uint256"
+            }
+          ],
+          "name": "PropertySold",
+          "type": "event",
+          "signature": "0xff9c9d90cee13a5021c61e4721b5d7bef20c4c0455cd4e5deca95fad36274ec8"
+        },
+        "0xc976af3d8d8069f798fb23a2667e0d6a2f0c1a6716c7fc0a76817265b28beb9d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "location",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "owner",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "registered_valuation",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "sell_value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "uplift_percentage",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "registered_date",
+              "type": "string"
+            }
+          ],
+          "name": "PropertyCreated",
+          "type": "event",
+          "signature": "0xc976af3d8d8069f798fb23a2667e0d6a2f0c1a6716c7fc0a76817265b28beb9d"
+        }
+      },
+      "links": {},
+      "address": "0x3198ba376c87a0806d3101628532f2f5fbf6d391",
+      "transactionHash": "0x8fa733410c9f86840ded7bf7fc2dd7f97f1c5a974274b319c6cf2f2a5dd3086b"
     }
   },
   "schemaVersion": "3.0.19",
