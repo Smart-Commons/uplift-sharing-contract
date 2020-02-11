@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import logo from '../logo.png';
 import './App.css';
 import Web3 from 'web3';
@@ -74,10 +75,17 @@ class App extends Component {
         })
       }
 
+      const equityShareCount = await smartcommons.methods.nrofInvestments.call()
+      for (var k = 1; k <= equityShareCount; k++){
+          const funder = await smartcommons.methods.funders(k).call()
+          this.setState({
+            funders: [...this.state.funders, funder]
+          })
+      }
+
       this.setState({ ownerCount })
       this.setState({ buyerCount })
       this.setState({ salesCount })      
-
       this.setState({loading: false})
     } else {
       window.alert('SmartCommons contract not deployed to detected network.')
@@ -97,7 +105,10 @@ class App extends Component {
       buyersOfProperty: [],
       salesCount: 0,
       propertySales: [],
+      funders: [],
+      equityShareCount: 0,
     }
+
     this.addProperty = this.addProperty.bind(this)
     this.addMember = this.addMember.bind(this)
     this.createSaleTransaction = this.createSaleTransaction.bind(this)
@@ -115,11 +126,16 @@ class App extends Component {
 
   createSaleTransaction(propertyId, buyerId, upliftValue, upliftContRate) {
     this.setState({ loading: true })
-    this.state.smartcommons.methods.createSaleTransaction(propertyId, buyerId, upliftValue, upliftContRate).send({from: this.state.account})
+    var algoHash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    var upliftByInfrastructure = parseInt((upliftValue * 20) / 100);
+    var toBeInvested = parseInt((upliftByInfrastructure * upliftContRate) / 100);
+
+    this.state.smartcommons.methods.createSaleTransaction(propertyId, buyerId, algoHash, upliftByInfrastructure, toBeInvested).send({from: this.state.account})
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
+
 
   render() {
     return (
@@ -131,6 +147,7 @@ class App extends Component {
             { this.state.loading
             ? <div id="loader" className="text-center"><p className="text-center">Loading...</p></div>
             : <Main 
+              funders={this.state.funders}
               properties={this.state.properties}
               propertySales={this.state.propertySales}
               buyersOfProperty={this.state.buyersOfProperty} 

@@ -91,8 +91,9 @@ class Main extends Component {
                 <th scope="col">Property Name</th>
                 <th scope="col">Prev Owner</th>
                 <th scope="col">Current Owner</th>
-                <th scope="col">Uplift Value</th>
-                <th scope="col">Uplift Cont. Rate</th>
+                <th scope="col">Uplift by Infrastructure</th>
+                <th scope="col">Uplift To Be Invested</th>
+                <th scope="col">Algorithm Hash</th>
                 </tr>
             </thead>
             <tbody id="salesTransactions">
@@ -106,12 +107,37 @@ class Main extends Component {
                         <td>{sale.toOwner}</td>
                         <td>{sale.uplift_value.toString()}</td>
                         <td>{sale.uplift_cont_rate.toString()}</td>
+                        <td>{sale.algoHash}</td>
                         </tr>
                     )
                     })}
             </tbody>
             </table>
             </div>
+
+        <div className="col ml-5">
+            <h3>List of equity contributors</h3>
+            <table className="table mt-5 mr-5">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Participant</th>
+                <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody id="fundersList">
+                { this.props.funders.map((funder, key) => {
+                    return(
+                        <tr key={key}>
+                        <th scope="row"></th>
+                        <td>{funder.funder}</td>
+                        <td>{funder.total_amount.toString()}</td>
+                        </tr>
+                    )
+                    })}
+            </tbody>
+            </table>
+        </div>
         <div className="col ml-5">
             <h3>Register a Property</h3>
             <form className="mb-5" onSubmit={(event) => {
@@ -198,6 +224,7 @@ class Main extends Component {
             <button type="submit" className="btn btn-dark">Add Property</button>
             </form>
             <p> </p>
+            <div className="col ml-5">
             <h3>Properties</h3>
             <table className="table">
             <thead>
@@ -248,6 +275,7 @@ class Main extends Component {
                     })}
             </tbody>
             </table>
+            </div>
         </div>
       </div>
     );
