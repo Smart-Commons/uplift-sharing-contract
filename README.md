@@ -1,5 +1,12 @@
 ## Smart Commons Solidity (ETH) Prototype
 
+Prototype Solidity code is deployed on Blockchain Kovan Test Net. dAPP Front-end is deployed on Heroku: https://smartcommons.herokuapp.com/
+
+
+This page will try to connect to your `MetaMask` wallet and will display the data that is entered to Blockchain through a MetaMask account. If it's not set up yet, it'll prompt a message saying this dAPP is not deployed on this network. For `MetaMask` and `Ganache` installations, please navigate to `Installation` section.
+
+
+
 ### Infrastructure Overview
 ![Smart Commons Infrastructure](infrastructure-overview.png)
 
