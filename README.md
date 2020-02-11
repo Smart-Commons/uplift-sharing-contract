@@ -13,19 +13,26 @@
 
 ### The Narrative
 Property, Sales and Participants data of the members of a Covenant is fetched from the Land Registry by the Backend (application). Then this data is pushed to the Database regularly.
-<br />
+
+
 The backend application will have a listener component that checks this fetched information to see whether there is a Sales transaction by a participant of the Smart Covenant.
-<br />
+
+
 If there is such transaction, the Middleware (part of the backend) will fetch the latest version of Property Valuation Algorithm from the blockchain.
-<br />
+
+
 Backend will run this algorithm for the property of the given Sales transaction. i.e Let's assume that a property is sold for 500k £, the algorithm computes that 200k £ is an uplift value and the agreed Uplift Contribution Rate is 10%. That means 20k £ of that amount will be transferred to Investment Fund automatically.
-<br />
+
+
 For the sake of reducing gas usage and simplicity, only the hash will be stored in blockchain, which will point to the latest version of the valuation algorithm in the public repository.
-<br />
+
+
 Valuation algorithm will be versioned and hosted in an open-source repository. Therefore any contributors will be able to develop and push their improvements to the valuation algorithm.
-<br />
+
+
 Sales, Participant and Property data, their current values and uplift values will be monitored from the dashboard.
-<br />
+
+
 ### Installation.
 First of all, download & install [Ganache](https://www.trufflesuite.com/ganachehttps://www.trufflesuite.com/ganache) 
 <br />
